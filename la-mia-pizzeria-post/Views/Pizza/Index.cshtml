@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <body>
         <a href="@Url.Action("create","pizza")"><button class="btn-primary">Aggiungi una pizza</button></a>
-    <ul class="d-flex">
+    <ul class="flex-wrap d-flex">
         @{
             int count = 1;
         }
@@ -17,11 +17,13 @@
                     <p class="card-text">Descrizione: @pizza.Ingredients</p>
                     <span class="mb-5">Prezzo: € @pizza.Price</span>
                     <p>Id: @count</p>
-                    <a href="@Url.Action("Details","Pizza", new{ id = count++})"><button class="btn-primary">Info</button></a>
-                    <a href="@Url.Action("Update","Pizza", new{ id = pizza.Id})"><button class="btn-secondary">Modifica</button></a> 
-                    <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.Id" method="post">
-                            <button class="btn-danger">Elimina</button>
-                    </form>
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Details","Pizza", new{ id = count++})"><button class="btn-primary">Info</button></a>
+                        <a href="@Url.Action("Update","Pizza", new{ id = pizza.Id})"><button class="btn-secondary">Modifica</button></a> 
+                        <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.Id" method="post">
+                                <button class="btn-danger">Elimina</button>
+                        </form>
+                    </div>    
                 </div>
             </li>
         }
