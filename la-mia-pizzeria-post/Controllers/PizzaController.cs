@@ -75,14 +75,30 @@ namespace la_mia_pizzeria.Controllers
         public IActionResult Update(int id)
         {
             PizzaContext pizzaContext = new PizzaContext();
-            Pizza pizza = pizzaContext.Pizzas.Where(pizza=>pizza.Id == id).FirstOrDefault();
-            
+            Pizza pizza = pizzaContext.Pizzas.Where(pizza=>pizza.Id == id).FirstOrDefault();    
 
             if(pizza == null)
             {
                 return NotFound("Non trovato");
             }
             return View(pizza);
+        }
+
+        [HttpPost]
+        public IActionResult Update(int id, Pizza formData)
+        {
+            PizzaContext pizzaContext = new PizzaContext();
+
+            Pizza pizza = pizzaContext.Pizzas.Where(pizzaContext=>pizzaContext.Id == id).FirstOrDefault();
+
+            pizza.Name = formData.Name;
+            pizza.Ingredients = formData.Ingredients;
+            pizza.Price = formData.Price;
+            pizza.Image = formData.Image;
+
+            pizzaContext.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
