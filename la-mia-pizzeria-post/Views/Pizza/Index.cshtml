@@ -17,7 +17,12 @@
                     <p class="card-text">Descrizione: @pizza.Ingredients</p>
                     <span class="mb-5">Prezzo: € @pizza.Price</span>
                     <p>Id: @count</p>
-                    <a href="@Url.Action("Details","Pizza", new{ id = count++})"><button class="btn-primary">INFO</button></a>
+                    <a href="@Url.Action("Details","Pizza", new{ id = count++})"><button class="btn-primary">Info</button></a>
+                        <form asp-controller="Pizza" asp-action="Update" asp-route-id="@pizza.Id" method="post">
+                            <button class="btn-primary">Modifica</button>
+
+                        </form>
+                    
                 </div>
             </li>
         }
