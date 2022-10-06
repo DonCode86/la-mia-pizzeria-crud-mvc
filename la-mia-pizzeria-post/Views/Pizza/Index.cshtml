@@ -1,0 +1,28 @@
+﻿@model List<Pizza>
+<!doctype html>
+<html lang="en">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <body>
+        <a href="@Url.Action("create","pizza")"><button class="btn-primary">Aggiungi una pizza</button></a>
+    <ul class="d-flex">
+        @{
+            int count = 1;
+        }
+        @foreach (Pizza pizza in Model)
+        {
+            <li class="card m-4" style="width: 15rem; list-style: none">
+                    <img style="width: 100%" src="@pizza.Image">
+                <div class="card-body">
+                        <h2 class="card-title text-danger">Pizza @pizza.Name</h2>
+                    <p class="card-text">Descrizione: @pizza.Ingredients</p>
+                    <span class="mb-5">Prezzo: € @pizza.Price</span>
+                    <p>Id: @count</p>
+                    <a href="@Url.Action("Details","Pizza", new{ id = count++})"><button class="btn-primary">INFO</button></a>
+                </div>
+            </li>
+        }
+    </ul>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    
+</html>

@@ -1,0 +1,35 @@
+﻿@model Pizza 
+
+
+<div class="container">
+	@*PREPARIAMO QUESTA FORM FACENDOLA COMBACIARE CON LA CREATE CHE CI ASPETTIAMO DI DOVER USARE*@
+	@*LA ACTION E' UNA URL A CUI IL FORM MANDERA' I DATI CHE HA PREDISPOSTO AL SUO INTERNO*@
+	<form asp-controller="Pizza" asp-action="Update" asp-route-id="Model.Id" method="post">
+
+			@Html.AntiForgeryToken()
+		<div class="mb-3">
+			<strong>Nome:</strong>
+			<input asp-for="Name" class="d-block w-100" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<strong>Ingredienti:</strong>
+			<input asp-for="Ingredients" class="d-block w-100" />
+			<span asp-validation-for="Ingredients" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<strong>Prezzo:</strong>
+			@*usiamo il model come interfaccia per l'input*@
+			<input asp-for="Price" class="d-block w-100" />
+			<span asp-validation-for="Price" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<strong>Immagine:</strong>
+			<input asp-for="Image" class="d-block w-100" />
+			<span asp-validation-for="Image" class="text-danger"></span>
+		</div>
+		<div class="text-end">
+			<input type="submit" class="btn btn-small btn-info" value="Salva">
+		</div>
+	</form>
+</div>
