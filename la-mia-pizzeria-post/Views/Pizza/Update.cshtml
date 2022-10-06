@@ -2,6 +2,7 @@
 
 
 <div class="container">
+	<a href="@Url.Action("Index","Pizza")"><button class="btn-primary">Home</button></a>
 	@*PREPARIAMO QUESTA FORM FACENDOLA COMBACIARE CON LA CREATE CHE CI ASPETTIAMO DI DOVER USARE*@
 	@*LA ACTION E' UNA URL A CUI IL FORM MANDERA' I DATI CHE HA PREDISPOSTO AL SUO INTERNO*@
 	<form asp-controller="Pizza" asp-action="Update" asp-route-id="@Model.Id" method="post">

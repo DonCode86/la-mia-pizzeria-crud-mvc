@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-<a class="nav-link" asp-area="" asp-controller="Pizza" asp-action="Index">Torna alla Home</a>
+<a href="@Url.Action("Index","Pizza")"><button class="btn-primary mb-5">Home</button></a>
 <ul class="d-flex">
     <li class="card m-4" style="width: 15rem; list-style: none">
             <img style="width: 100%" src="@Model.Image">

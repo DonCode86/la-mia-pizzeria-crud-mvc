@@ -3,7 +3,9 @@
 <html lang="en">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <body>
-        <a href="@Url.Action("create","pizza")"><button class="btn-primary">Aggiungi una pizza</button></a>
+        <div class="d-flex justify-content-center">
+            <a href="@Url.Action("create","pizza")"><button class="btn-primary">Aggiungi una pizza</button></a>
+        </div>  
     <ul class="flex-wrap d-flex">
         @{
             int count = 1;
