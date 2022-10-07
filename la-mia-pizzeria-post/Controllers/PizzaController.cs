@@ -1,4 +1,5 @@
 ﻿using la_mia_pizzeria.Models;
+using la_mia_pizzeria.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -48,11 +49,14 @@ namespace la_mia_pizzeria.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            PizzasCategories pizzasCategories = new PizzasCategories(); 
+
+            pizzasCategories.Categories = new PizzaContext().Categories.ToList();
+
+            return View(pizzasCategories);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]        
         public IActionResult Create(Pizza formData) //APPENA SALVO PRIMA DI ENTRARE FORMDATA=NEW ECC... INIZIALIZZA L'ISTANZA PER NOI IN AUTOMATICO
         {
             PizzaContext db = new PizzaContext();
@@ -72,10 +76,13 @@ namespace la_mia_pizzeria.Controllers
             }
         }
         [HttpGet]
+        
         public IActionResult Update(int id)
         {
-            PizzaContext pizzaContext = new PizzaContext();
-            Pizza pizza = pizzaContext.Pizzas.Where(pizza=>pizza.Id == id).FirstOrDefault();    
+            //richiamo il db
+            PizzaContext pizzaContext = new PizzaContext(); //gli passo il model
+            //recupero la pizza tramite id e lo restituisco alla vista
+            Pizza pizza = pizzaContext.Pizzas.Where(pizza=>pizza.Id == id).FirstOrDefault();    //vado a prendere dalle istanze del db la pizza
 
             if(pizza == null)
             {
@@ -85,25 +92,34 @@ namespace la_mia_pizzeria.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        //metodo che gestisce i dati del form (gli passo l'id della pizza, e il modello con i dati inseriti nel form(formData))
         public IActionResult Update(int id, Pizza formData)
         {
-            PizzaContext pizzaContext = new PizzaContext();
+            PizzaContext pizzaContext = new PizzaContext();//richiamo il db
 
-            Pizza pizza = pizzaContext.Pizzas.Where(pizzaContext=>pizzaContext.Id == id).FirstOrDefault();
-
-            pizza.Name = formData.Name;
-            pizza.Ingredients = formData.Ingredients;
-            pizza.Price = formData.Price;
-            pizza.Image = formData.Image;
-
+            Pizza pizza = pizzaContext.Pizzas.Where(pizzaContext=>pizzaContext.Id == id).FirstOrDefault();//mi riprendo i dati da modificare
+            // e li modifico
+            if (pizza != null)
+            {
+                pizza.Name = formData.Name;
+                pizza.Ingredients = formData.Ingredients;
+                pizza.Price = formData.Price;
+                pizza.Image = formData.Image;
+            } else
+            {
+                return NotFound("Non trovato");
+            }
+            
             pizzaContext.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index");//.net costruisce l'url 302/200
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        //gli passo l'id dell'oggetto che voglio eliminare come parametro
+        public IActionResult Delete(int id) 
         {
             PizzaContext pizzaContext = new PizzaContext();
             Pizza pizza = pizzaContext.Pizzas.Where(pizza=> pizza.Id == id).FirstOrDefault();

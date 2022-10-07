@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Framework;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
 
@@ -6,6 +7,8 @@ namespace la_mia_pizzeria.Models
 {
     public class Pizza
     {
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
         public Pizza()
         {
         }
