@@ -7,21 +7,19 @@
             <a href="@Url.Action("create","pizza")"><button class="btn-primary">Aggiungi una pizza</button></a>
         </div>  
     <ul class="flex-wrap d-flex">
-        @{
-            int count = 1;
-        }
         @foreach (Pizza pizza in Model)
         {
             <li class="card m-4" style="width: 15rem; list-style: none">
                     <img style="width: 100%" src="@pizza.Image">
                 <div class="card-body">
                         <h2 class="card-title text-danger">Pizza @pizza.Name</h2>
-                    <p class="card-text">Descrizione: @pizza.Ingredients</p>
-                    <span class="mb-5">Prezzo: € @pizza.Price</span>
-                    <p>Id: @count</p>
+                    <h5 class="card-text">Descrizione: @pizza.Ingredients</h5>
+                    <h5>Prezzo: € @pizza.Price</h5>
+                    <h5 class="mb-5">Categoria: @pizza.Category.Name</h5>
+                    <p>Id: @pizza.Id</p>
                     <div class="d-flex justify-content-between">
                             <a href="@Url.Action("Details","Pizza", new{ id = pizza.Id})"><button class="btn-primary">Info</button></a>
-                        <a href="@Url.Action("Update","Pizza", new{ id = pizza.Id})"><button class="btn-secondary">Modifica</button></a> 
+                            <a href="@Url.Action("Update","Pizza", new{ id = pizza.Id})"><button class="btn-secondary">Modifica</button></a> 
                         <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.Id" method="post">
                                 <button class="btn-danger">Elimina</button>
                         </form>

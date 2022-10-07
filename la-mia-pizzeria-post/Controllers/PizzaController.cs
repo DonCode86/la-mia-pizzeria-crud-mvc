@@ -1,6 +1,7 @@
 ﻿using la_mia_pizzeria.Models;
-using la_mia_pizzeria.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
 
 namespace la_mia_pizzeria.Controllers
@@ -17,12 +18,18 @@ namespace la_mia_pizzeria.Controllers
         public IActionResult Index()
         {
 
+            //using (PizzaContext context = new PizzaContext())
+            //{
+            //    //MI RECUPERO DAL CONTEXT LA LISTA DELLE PIZZE
+            //    IQueryable<Pizza> pizzas = context.Pizzas;
+            //    //E LI PASSO ALLA VISTA
+            //    return View("Index", pizzas.ToList());  
+            //}
             using (PizzaContext context = new PizzaContext())
             {
-                //MI RECUPERO DAL CONTEXT LA LISTA DELLE PIZZE
-                IQueryable<Pizza> pizzas = context.Pizzas;
-                //E LI PASSO ALLA VISTA
-                return View("Index", pizzas.ToList());  
+                List<Pizza> pizzas = context.Pizzas.Include("Category").ToList();
+
+                return View("Index", pizzas);
             }
         }
 
@@ -32,7 +39,7 @@ namespace la_mia_pizzeria.Controllers
             {
                 //FACCIO RICHIESTA DELLE PIZZE ANDANDO A SELEZIONARE LA PIZZA SPECIFICA
                 //pizzaFound e' LINQ (questa e' la method syntax)
-                Pizza pizzaFound = context.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();
+                Pizza pizzaFound = context.Pizzas.Where(pizza => pizza.Id == id).Include(pizza => pizza.Category).FirstOrDefault();
                 //SE IL POST NON VIENE TROVATO
                 if (pizzaFound == null)
                 {
@@ -57,63 +64,90 @@ namespace la_mia_pizzeria.Controllers
         }
 
         [HttpPost]        
-        public IActionResult Create(Pizza formData) //APPENA SALVO PRIMA DI ENTRARE FORMDATA=NEW ECC... INIZIALIZZA L'ISTANZA PER NOI IN AUTOMATICO
+        public IActionResult Create(PizzasCategories formData) //APPENA SALVO PRIMA DI ENTRARE FORMDATA=NEW ECC... INIZIALIZZA L'ISTANZA PER NOI IN AUTOMATICO
         {
             PizzaContext db = new PizzaContext();
 
             if (!ModelState.IsValid)
             {
+                formData.Categories = db.Categories.ToList();
                 return View("Create", formData);
             }
-            
-            using (PizzaContext context = new PizzaContext())
-            {
-                //AGGIUNGO I DATI NEL FORMDATA AL DB E SALVO I CAMBIAMENTI
-                db.Pizzas.Add(formData);
-                db.SaveChanges();
-                //RITORNA ALLA LISTA DEI POST
-                return RedirectToAction("Index");
-            }
+
+            //using (PizzaContext context = new PizzaContext())
+            //{
+            //    //AGGIUNGO I DATI NEL FORMDATA AL DB E SALVO I CAMBIAMENTI
+            //    db.Pizzas.Add(formData);
+            //    db.SaveChanges();
+            //    //RITORNA ALLA LISTA DEI POST
+            //    return RedirectToAction("Index");
+            //}
+            db.Pizzas.Add(formData.Pizza);
+
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
         [HttpGet]
         
         public IActionResult Update(int id)
         {
             //richiamo il db
-            PizzaContext pizzaContext = new PizzaContext(); //gli passo il model
-            //recupero la pizza tramite id e lo restituisco alla vista
-            Pizza pizza = pizzaContext.Pizzas.Where(pizza=>pizza.Id == id).FirstOrDefault();    //vado a prendere dalle istanze del db la pizza
-
-            if(pizza == null)
+            using (PizzaContext pizzaContext = new PizzaContext())//gli passo il model
             {
-                return NotFound("Non trovato");
+                Pizza pizzaToEdit = pizzaContext.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();//vado a prendere dalle istanze del db la pizza
+
+                if (pizzaToEdit == null)
+                {
+                    return NotFound("Non trovato");
+                }
+
+                PizzasCategories pizzasCategories = new PizzasCategories();
+
+                pizzasCategories.Pizza = pizzaToEdit;
+
+                pizzasCategories.Categories = pizzaContext.Categories.ToList();
+            
+                return View(pizzasCategories); //recupero la pizza tramite id e lo restituisco alla vista 
+           
             }
-            return View(pizza);
+                     
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         //metodo che gestisce i dati del form (gli passo l'id della pizza, e il modello con i dati inseriti nel form(formData))
-        public IActionResult Update(int id, Pizza formData)
+        public IActionResult Update(int id, PizzasCategories formData)
         {
-            PizzaContext pizzaContext = new PizzaContext();//richiamo il db
+            using (PizzaContext pizzaContext = new PizzaContext())//richiamo il db
+            {
+                if (!ModelState.IsValid)
+                {
+                    formData.Categories = pizzaContext.Categories.ToList();
+                    return View("Update", formData);
+                }
 
-            Pizza pizza = pizzaContext.Pizzas.Where(pizzaContext=>pizzaContext.Id == id).FirstOrDefault();//mi riprendo i dati da modificare
-            // e li modifico
-            if (pizza != null)
-            {
-                pizza.Name = formData.Name;
-                pizza.Ingredients = formData.Ingredients;
-                pizza.Price = formData.Price;
-                pizza.Image = formData.Image;
-            } else
-            {
-                return NotFound("Non trovato");
+                formData.Pizza.Id = id;
+                pizzaContext.Pizzas.Update(formData.Pizza);
+
+                pizzaContext.SaveChanges();
+
+                return RedirectToAction("Index");//.net costruisce l'url 302/200
             }
-            
-            pizzaContext.SaveChanges();
+            //Pizza pizza = pizzaContext.Pizzas.Where(pizzaContext=>pizzaContext.Id == id).FirstOrDefault();//mi riprendo i dati da modificare
+            //// e li modifico
+            //if (pizza != null)
+            //{
+            //    pizza.Name = formData.Name;
+            //    pizza.Ingredients = formData.Ingredients;
+            //    pizza.Price = formData.Price;
+            //    pizza.Image = formData.Image;
+            //} else
+            //{
+            //    return NotFound("Non trovato");
+            //}
 
-            return RedirectToAction("Index");//.net costruisce l'url 302/200
+            
         }
 
         [HttpPost]
