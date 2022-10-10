@@ -58,19 +58,20 @@ namespace la_mia_pizzeria.Controllers
         {
             PizzasCategories pizzasCategories = new PizzasCategories(); 
 
-            pizzasCategories.Categories = new PizzaContext().Categories.ToList();
+            pizzasCategories.Categories = new PizzaContext().Categories.ToList(); 
 
-            return View(pizzasCategories);
+            return View(pizzasCategories); //porto il dato all'interno della vista
         }
 
-        [HttpPost]        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(PizzasCategories formData) //APPENA SALVO PRIMA DI ENTRARE FORMDATA=NEW ECC... INIZIALIZZA L'ISTANZA PER NOI IN AUTOMATICO
         {
             PizzaContext db = new PizzaContext();
 
             if (!ModelState.IsValid)
             {
-                formData.Categories = db.Categories.ToList();
+                formData.Categories = db.Categories.ToList();//popolo le categorie
                 return View("Create", formData);
             }
 

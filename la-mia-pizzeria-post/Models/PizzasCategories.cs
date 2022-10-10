@@ -4,6 +4,7 @@ namespace la_mia_pizzeria.Models
 {
     public class PizzasCategories
     {
+        //pizza che avevamo gia'
         public Pizza Pizza { get; set; }
 
         public  List<Category> Categories { get; set; }
@@ -15,3 +16,5 @@ namespace la_mia_pizzeria.Models
         }
     }
 }
+
+//questo e' il modello della nostra vista
