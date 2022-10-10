@@ -8,21 +8,6 @@ namespace la_mia_pizzeria.Models
 {
     public class Pizza
     {
-        public int? CategoryId { get; set; }
-        public Category? Category { get; set; } //creo istanza della categoria
-
-        public List<Ingre> Ingres { get; set; }
-        public Pizza()
-        {
-        }
-
-        public Pizza(string name, string ingredients, string image, double price)
-        {
-            Name = name;
-            Ingredients = ingredients;
-            Image = image;
-            Price = price;
-        }
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
@@ -37,8 +22,29 @@ namespace la_mia_pizzeria.Models
         public string Image { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
-        [Range(0,100, ErrorMessage = "Il prezzo non è valido")]
+        [Range(0, 100, ErrorMessage = "Il prezzo non è valido")]
         public double Price { get; set; }
+
+        public int? CategoryId { get; set; }
+
+        public Category? Category { get; set; } //creo istanza della categoria
+
+        public List<Ingre>? Ingres { get; set; }
+
+        public Pizza()
+        {
+        }
+
+        public Pizza(string name, string ingredients, string image, double price)
+        {
+            Name = name;
+            Ingredients = ingredients;
+            Image = image;
+            Price = price;
+        }
+       
+
+        
 
     }
 }

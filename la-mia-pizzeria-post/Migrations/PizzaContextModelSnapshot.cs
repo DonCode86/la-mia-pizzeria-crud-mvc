@@ -22,6 +22,38 @@ namespace la_mia_pizzeria_static.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("IngrePizza", b =>
+                {
+                    b.Property<int>("IngresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PizzasId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IngresId", "PizzasId");
+
+                    b.HasIndex("PizzasId");
+
+                    b.ToTable("IngrePizza");
+                });
+
+            modelBuilder.Entity("la_mia_pizzeria_static.Models.Ingre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ingres");
+                });
+
             modelBuilder.Entity("la_mia_pizzeria.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -72,6 +104,21 @@ namespace la_mia_pizzeria_static.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Pizzas");
+                });
+
+            modelBuilder.Entity("IngrePizza", b =>
+                {
+                    b.HasOne("la_mia_pizzeria_static.Models.Ingre", null)
+                        .WithMany()
+                        .HasForeignKey("IngresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("la_mia_pizzeria.Models.Pizza", null)
+                        .WithMany()
+                        .HasForeignKey("PizzasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("la_mia_pizzeria.Models.Pizza", b =>

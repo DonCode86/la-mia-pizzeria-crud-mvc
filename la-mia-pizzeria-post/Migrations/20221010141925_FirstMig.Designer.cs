@@ -12,8 +12,8 @@ using la_mia_pizzeria.Models;
 namespace la_mia_pizzeria_static.Migrations
 {
     [DbContext(typeof(PizzaContext))]
-    [Migration("20221007133622_UpdateEntityAddCategory")]
-    partial class UpdateEntityAddCategory
+    [Migration("20221010141925_FirstMig")]
+    partial class FirstMig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,38 @@ namespace la_mia_pizzeria_static.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("IngrePizza", b =>
+                {
+                    b.Property<int>("IngresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PizzasId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IngresId", "PizzasId");
+
+                    b.HasIndex("PizzasId");
+
+                    b.ToTable("IngrePizza");
+                });
+
+            modelBuilder.Entity("la_mia_pizzeria_static.Models.Ingre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ingres");
+                });
 
             modelBuilder.Entity("la_mia_pizzeria.Models.Category", b =>
                 {
@@ -74,6 +106,21 @@ namespace la_mia_pizzeria_static.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Pizzas");
+                });
+
+            modelBuilder.Entity("IngrePizza", b =>
+                {
+                    b.HasOne("la_mia_pizzeria_static.Models.Ingre", null)
+                        .WithMany()
+                        .HasForeignKey("IngresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("la_mia_pizzeria.Models.Pizza", null)
+                        .WithMany()
+                        .HasForeignKey("PizzasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("la_mia_pizzeria.Models.Pizza", b =>

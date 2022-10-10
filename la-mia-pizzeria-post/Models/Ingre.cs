@@ -8,7 +8,7 @@ namespace la_mia_pizzeria_static.Models
 
         public string Name { get; set; }
 
-        public List<Pizza> Pizzas { get; set; }
+        public List<Pizza>? Pizzas { get; set; }
 
         public Ingre()
         {
