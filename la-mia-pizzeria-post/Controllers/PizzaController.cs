@@ -1,4 +1,5 @@
 ﻿using la_mia_pizzeria.Models;
+using la_mia_pizzeria_static.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +28,7 @@ namespace la_mia_pizzeria.Controllers
             //}
             using (PizzaContext context = new PizzaContext())
             {
-                List<Pizza> pizzas = context.Pizzas.Include("Category").ToList();
+                List<Pizza> pizzas = context.Pizzas.Include("Category").Include("Ingres").ToList();
 
                 return View("Index", pizzas);
             }
@@ -39,7 +40,7 @@ namespace la_mia_pizzeria.Controllers
             {
                 //FACCIO RICHIESTA DELLE PIZZE ANDANDO A SELEZIONARE LA PIZZA SPECIFICA
                 //pizzaFound e' LINQ (questa e' la method syntax)
-                Pizza pizzaFound = context.Pizzas.Where(pizza => pizza.Id == id).Include(pizza => pizza.Category).FirstOrDefault();
+                Pizza pizzaFound = context.Pizzas.Where(pizza => pizza.Id == id).Include(pizza => pizza.Category).Include(pizza => pizza.Ingres).FirstOrDefault();
                 //SE IL POST NON VIENE TROVATO
                 if (pizzaFound == null)
                 {
@@ -60,6 +61,10 @@ namespace la_mia_pizzeria.Controllers
 
             pizzasCategories.Categories = new PizzaContext().Categories.ToList(); 
 
+            PizzaContext pizzaContext = new PizzaContext();
+
+            pizzasCategories.Ingres = pizzaContext.Ingres.ToList();
+
             return View(pizzasCategories); //porto il dato all'interno della vista
         }
 
@@ -72,6 +77,7 @@ namespace la_mia_pizzeria.Controllers
             if (!ModelState.IsValid)
             {
                 formData.Categories = db.Categories.ToList();//popolo le categorie
+                formData.Ingres = db.Ingres.ToList();//popolo le categorie
                 return View("Create", formData);
             }
 
@@ -83,6 +89,9 @@ namespace la_mia_pizzeria.Controllers
             //    //RITORNA ALLA LISTA DEI POST
             //    return RedirectToAction("Index");
             //}
+
+            formData.Pizza.Ingres = db.Ingres.Where(ingre => formData.SelectedIngres.Contains(ingre.Id)).ToList<Ingre>();
+
             db.Pizzas.Add(formData.Pizza);
 
             db.SaveChanges();
@@ -96,7 +105,8 @@ namespace la_mia_pizzeria.Controllers
             //richiamo il db
             using (PizzaContext pizzaContext = new PizzaContext())//gli passo il model
             {
-                Pizza pizzaToEdit = pizzaContext.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();//vado a prendere dalle istanze del db la pizza
+                Pizza pizzaToEdit = pizzaContext.Pizzas.Include("Category").Include("Ingres").
+                    Where(pizza => pizza.Id == id).FirstOrDefault();//vado a prendere dalle istanze del db la pizza
 
                 if (pizzaToEdit == null)
                 {
@@ -108,7 +118,8 @@ namespace la_mia_pizzeria.Controllers
                 pizzasCategories.Pizza = pizzaToEdit;
 
                 pizzasCategories.Categories = pizzaContext.Categories.ToList();
-            
+                pizzasCategories.Ingres = pizzaContext.Ingres.ToList();
+
                 return View(pizzasCategories); //recupero la pizza tramite id e lo restituisco alla vista 
            
             }
@@ -125,11 +136,16 @@ namespace la_mia_pizzeria.Controllers
                 if (!ModelState.IsValid)
                 {
                     formData.Categories = pizzaContext.Categories.ToList();
+                    formData.Ingres = pizzaContext.Ingres.ToList();
                     return View("Update", formData);
                 }
 
-                formData.Pizza.Id = id;
-                pizzaContext.Pizzas.Update(formData.Pizza);
+                Pizza pizza = pizzaContext.Pizzas.Where(pizza => pizza.Id == id).Include("Ingres").FirstOrDefault();
+
+                pizza.Name = formData.Pizza.Name;
+                pizza.Ingredients = formData.Pizza.Ingredients;
+                pizza.CategoryId = formData.Pizza.CategoryId;
+                pizza.Ingres = pizzaContext.Ingres.Where(tag => formData.SelectedIngres.Contains(tag.Id)).ToList<Ingre>();
 
                 pizzaContext.SaveChanges();
 

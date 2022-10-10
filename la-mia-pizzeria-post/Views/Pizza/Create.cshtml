@@ -1,4 +1,5 @@
-﻿@model PizzasCategories
+﻿@using la_mia_pizzeria_static.Models
+@model PizzasCategories
 
 <div class="container">
 	<a href="@Url.Action("Index","Pizza")"><button class="btn-primary mb-5">Home</button></a>
@@ -45,6 +46,18 @@
                         }
                     </select>
 					<span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
+         </div>
+		<div class="mb-3">
+                    <strong>Ingredienti:</strong>
+                    <select multiple="multiple"
+                        asp-for="SelectedIngres"
+                        size="10"
+                            class="form-control mb-2 mr-sm-2 ml-sm-3 leftList">
+                        @foreach (Ingre ingre in Model.Ingres)
+                        {
+                            <option value="@ingre.Id">@ingre.Name</option>
+                        }
+                        </select>
                 </div>
 		<div class="text-end">
 			<input type="submit" class="btn btn-small btn-info" value="Salva">
