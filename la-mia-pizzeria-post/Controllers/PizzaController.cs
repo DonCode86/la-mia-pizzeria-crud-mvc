@@ -1,5 +1,6 @@
 ﻿using la_mia_pizzeria.Models;
 using la_mia_pizzeria_static.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 
 namespace la_mia_pizzeria.Controllers
 {
+    [Authorize]
     public class PizzaController : Controller
     {
         private readonly ILogger<PizzaController> _logger;
@@ -57,11 +59,11 @@ namespace la_mia_pizzeria.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            PizzasCategories pizzasCategories = new PizzasCategories(); 
-
-            pizzasCategories.Categories = new PizzaContext().Categories.ToList(); 
+            PizzasCategories pizzasCategories = new PizzasCategories();
 
             PizzaContext pizzaContext = new PizzaContext();
+
+            pizzasCategories.Categories = pizzaContext.Categories.ToList(); 
 
             pizzasCategories.Ingres = pizzaContext.Ingres.ToList();
 
@@ -70,7 +72,7 @@ namespace la_mia_pizzeria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(PizzasCategories formData) //APPENA SALVO PRIMA DI ENTRARE FORMDATA=NEW ECC... INIZIALIZZA L'ISTANZA PER NOI IN AUTOMATICO
+        public IActionResult Create(PizzasCategories formData) //
         {
             PizzaContext db = new PizzaContext();
 
@@ -90,7 +92,7 @@ namespace la_mia_pizzeria.Controllers
             //    return RedirectToAction("Index");
             //}
 
-            formData.Pizza.Ingres = db.Ingres.Where(ingre => formData.SelectedIngres.Contains(ingre.Id)).ToList<Ingre>();
+            formData.Pizza.Ingres = db.Ingres.Where(ingre => formData.SelectedIngres.Contains(ingre.Id)).ToList<Ingre>();  //lego le pizze agli ingredienti
 
             db.Pizzas.Add(formData.Pizza);
 
@@ -98,8 +100,8 @@ namespace la_mia_pizzeria.Controllers
 
             return RedirectToAction("Index");
         }
+
         [HttpGet]
-        
         public IActionResult Update(int id)
         {
             //richiamo il db

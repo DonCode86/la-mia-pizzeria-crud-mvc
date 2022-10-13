@@ -10,16 +10,16 @@ namespace la_mia_pizzeria.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Il campo è obbligatorio")]
+        //[Required(ErrorMessage = "Il campo è obbligatorio")]
         [StringLength(25, ErrorMessage = "Il prezzo non è valido")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
         [StringLength(200, ErrorMessage = "La lista ingredienti non puo' contenere più di 200 caratteri")]
-        public string Ingredients { get; set; }
+        public string? Ingredients { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
         [Range(0, 100, ErrorMessage = "Il prezzo non è valido")]
@@ -29,7 +29,7 @@ namespace la_mia_pizzeria.Models
 
         public Category? Category { get; set; } //creo istanza della categoria
 
-        public List<Ingre>? Ingres { get; set; }
+        public List<Ingre>? Ingres { get; set; } // n-to-n
 
         public Pizza()
         {

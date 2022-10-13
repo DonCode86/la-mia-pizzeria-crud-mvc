@@ -15,7 +15,7 @@
                         <h2 class="card-title text-danger">Pizza @pizza.Name</h2>
                     <h5 class="card-text">Descrizione: @pizza.Ingredients</h5>
                     <h5>Prezzo: € @pizza.Price</h5>
-                    <h5 class="mb-5">Categoria: @pizza.Category.Name</h5>
+                    
                     <p>Id: @pizza.Id</p>
                     <div class="d-flex justify-content-between">
                             <a href="@Url.Action("Details","Pizza", new{ id = pizza.Id})"><button class="btn-primary">Info</button></a>
